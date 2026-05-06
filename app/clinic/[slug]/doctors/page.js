@@ -1,11 +1,16 @@
 import { supabase } from '../../../lib/supabase'
 import { notFound } from 'next/navigation'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DoctorsPage({ params }) {
-  const { slug } = await params
+  const { slug } = params
 
   const { data: clinic } = await supabase
-    .from('clinics').select('*').eq('slug', slug).single()
+    .from('clinics')
+    .select('*')
+    .eq('slug', slug)
+    .single()
 
   if (!clinic) return notFound()
 
