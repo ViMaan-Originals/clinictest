@@ -2,7 +2,7 @@ import { supabase } from '../../../lib/supabase'
 import { notFound } from 'next/navigation'
 
 export default async function FaqsPage({ params }) {
-  const { slug } = await params
+  const { slug } = params
 
   const { data: clinic } = await supabase
     .from('clinics').select('*').eq('slug', slug).single()

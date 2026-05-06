@@ -2,7 +2,7 @@ import { supabase } from '../../lib/supabase'
 import { notFound } from 'next/navigation'
 
 export default async function ClinicPage({ params }) {
-  const { slug } = await params
+  const { slug } =  params
 
   const { data: clinic, error } = await supabase
     .from('clinics')
