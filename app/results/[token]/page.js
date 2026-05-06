@@ -1,8 +1,17 @@
 import { supabase } from '../../lib/supabase'
 import { notFound } from 'next/navigation'
 
+/*
 export default async function ResultPage({ params }) {
-  const { token } = await params
+  const { token } = await params */
+
+export const dynamic = 'force-dynamic'
+
+export default async function DoctorsPage({ params }) {
+  const { slug } = await Promise.resolve(params)
+
+  // rest same
+
 
   const { data: result, error } = await supabase
     .from('test_results')

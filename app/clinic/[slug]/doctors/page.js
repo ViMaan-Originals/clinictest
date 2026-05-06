@@ -1,16 +1,20 @@
 import { supabase } from '../../../lib/supabase'
 import { notFound } from 'next/navigation'
 
+/*export default async function DoctorsPage({ params }) {
+  const { slug } = await params
+
+*/
 export const dynamic = 'force-dynamic'
 
 export default async function DoctorsPage({ params }) {
-  const { slug } = params
+  const { slug } = await Promise.resolve(params)
+
+  // rest same
+
 
   const { data: clinic } = await supabase
-    .from('clinics')
-    .select('*')
-    .eq('slug', slug)
-    .single()
+    .from('clinics').select('*').eq('slug', slug).single()
 
   if (!clinic) return notFound()
 
@@ -156,8 +160,7 @@ export default async function DoctorsPage({ params }) {
     #docImg{
         overflow:hidden;
         border-radius:50%;
-        width:80px;
-        height:80px}
+        wi}
 
         @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
         .doctor-card { animation: fadeUp 0.3s ease both; }

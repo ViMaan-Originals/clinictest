@@ -1,8 +1,16 @@
 import { supabase } from '../../../lib/supabase'
 import { notFound } from 'next/navigation'
 
+/*
 export default async function FaqsPage({ params }) {
   const { slug } = params
+*/
+export const dynamic = 'force-dynamic'
+
+export default async function DoctorsPage({ params }) {
+  const { slug } = await Promise.resolve(params)
+
+  // rest same
 
   const { data: clinic } = await supabase
     .from('clinics').select('*').eq('slug', slug).single()
