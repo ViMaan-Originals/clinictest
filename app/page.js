@@ -1,5 +1,11 @@
 import { supabase } from './lib/supabase'
 
+import { redirect } from 'next/navigation'
+
+export default function Home() {
+  redirect('/dashboard')
+}
+
 export default async function Home() {
   const { data, error } = await supabase.from('clinics').select('*')
 
