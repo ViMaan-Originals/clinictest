@@ -1,0 +1,228 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
+import { useRouter } from 'next/navigation'
+
+const statusColors = {
+  pending: { bg: '#FEF3C7', color: '#D97706' },
+  confirmed: { bg: '#D1FAE5', color: '#059669' },
+  cancelled: { bg: '#FEE2E2', color: '#DC2626' },
+  completed: { bg: '#F3F4F6', color: '#6B7280' },
+}
+
+const FILTERS = ['All', 'Today', 'Upcoming', 'Past']
+
+export default function AppointmentsPage() {
+  const [appointments, setAppointments] = useState([])
+  const [grouped, setGrouped] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [clinic, setClinic] = useState(null)
+  const [filter, setFilter] = useState('Today')
+  const router = useRouter()
+
+  const today = new Date().toISOString().split('T')[0]
+
+  useEffect(() => { fetchData() }, [])
+  useEffect(() => { applyFilter() }, [filter, appointments])
+
+  async function fetchData() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { router.push('/dashboard'); return }
+    const { data: clinicUser } = await supabase
+      .from('clinic_users').select('*, clinics(*)')
+      .eq('email', user.email).single()
+    if (!clinicUser) { router.push('/dashboard'); return }
+    setClinic(clinicUser.clinics)
+    const { data } = await supabase
+      .from('appointments')
+      .select('*, patients(name, phone), doctors(name)')
+      .eq('clinic_id', clinicUser.clinics.id)
+      .order('date', { ascending: false })
+    setAppointments(data || [])
+    setLoading(false)
+  }
+
+  function applyFilter() {
+    let filtered = [...appointments]
+    if (filter === 'Today') filtered = appointments.filter(a => a.date === today)
+    else if (filter === 'Upcoming') filtered = appointments.filter(a => a.date > today)
+    else if (filter === 'Past') filtered = appointments.filter(a => a.date < today)
+
+    // Group by date
+    const groups = {}
+    filtered.forEach(apt => {
+      if (!groups[apt.date]) groups[apt.date] = []
+      groups[apt.date].push(apt)
+    })
+    // Sort each group by time
+    Object.keys(groups).forEach(date => {
+      groups[date].sort((a, b) => a.time_slot.localeCompare(b.time_slot))
+    })
+    setGrouped(groups)
+  }
+
+  async function updateStatus(id, status) {
+    await supabase.from('appointments').update({ status }).eq('id', id)
+    fetchData()
+  }
+
+  function formatDate(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00')
+    if (dateStr === today) return 'Today'
+    return d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })
+  }
+
+  function getDateStats(apts) {
+    return {
+      total: apts.length,
+      confirmed: apts.filter(a => a.status === 'confirmed').length,
+      pending: apts.filter(a => a.status === 'pending').length,
+      cancelled: apts.filter(a => a.status === 'cancelled').length,
+      completed: apts.filter(a => a.status === 'completed').length,
+    }
+  }
+
+  const sortedDates = Object.keys(grouped).sort((a, b) => {
+    if (filter === 'Past') return b.localeCompare(a)
+    return a.localeCompare(b)
+  })
+
+  if (loading) return <p style={{ fontFamily: 'DM Sans, sans-serif', color: '#9CA3AF' }}>Loading...</p>
+
+  return (
+    <div style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap');`}</style>
+
+      {/* Header */}
+      <div style={{ marginBottom: '24px' }}>
+        <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: '28px', color: '#111827', margin: '0 0 4px' }}>Appointments</h1>
+        <p style={{ fontSize: '13px', color: '#6B7280', margin: 0 }}>{clinic?.name}</p>
+      </div>
+
+      {/* Filter Tabs */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', flexWrap: 'wrap' }}>
+        {FILTERS.map(f => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            style={{
+              padding: '8px 18px',
+              borderRadius: '100px',
+              border: '1.5px solid',
+              borderColor: filter === f ? '#0D9488' : '#E5E7EB',
+              background: filter === f ? '#0D9488' : 'white',
+              color: filter === f ? 'white' : '#6B7280',
+              fontSize: '13px', fontWeight: 600,
+              cursor: 'pointer', fontFamily: 'inherit',
+              transition: 'all 0.15s'
+            }}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      {sortedDates.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#9CA3AF' }}>
+          <p style={{ fontSize: '32px', marginBottom: '8px' }}>📭</p>
+          <p style={{ fontSize: '14px' }}>No appointments {filter === 'Today' ? 'today' : 'found'}.</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {sortedDates.map(date => {
+            const apts = grouped[date]
+            const s = getDateStats(apts)
+            return (
+              <div key={date}>
+                {/* Date Header */}
+                <div style={{ marginBottom: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                    <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: 0 }}>
+                      {formatDate(date)}
+                      <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: 400, marginLeft: '8px' }}>{date}</span>
+                    </h2>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      {[
+                        { label: `${s.total} total`, bg: '#F0FDFA', color: '#0D9488' },
+                        s.pending > 0 && { label: `${s.pending} pending`, bg: '#FEF3C7', color: '#D97706' },
+                        s.confirmed > 0 && { label: `${s.confirmed} confirmed`, bg: '#D1FAE5', color: '#059669' },
+                        s.cancelled > 0 && { label: `${s.cancelled} cancelled`, bg: '#FEE2E2', color: '#DC2626' },
+                        s.completed > 0 && { label: `${s.completed} done`, bg: '#F3F4F6', color: '#6B7280' },
+                      ].filter(Boolean).map((tag, i) => (
+                        <span key={i} style={{ padding: '3px 10px', borderRadius: '100px', background: tag.bg, color: tag.color, fontSize: '11px', fontWeight: 600 }}>
+                          {tag.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Appointments */}
+                <div style={{ background: 'white', border: '1.5px solid #E5E7EB', borderRadius: '14px', overflow: 'hidden' }}>
+                  {apts.map((apt, i) => (
+                    <div key={apt.id} style={{
+                      padding: '14px 18px',
+                      borderBottom: i < apts.length - 1 ? '1px solid #F9FAFB' : 'none',
+                      display: 'flex', alignItems: 'center', gap: '14px'
+                    }}>
+                      {/* Time */}
+                      <div style={{ width: '64px', flexShrink: 0, textAlign: 'center', background: '#F7F9F8', borderRadius: '10px', padding: '8px 4px' }}>
+                        <p style={{ fontSize: '12px', fontWeight: 700, color: '#0D9488', margin: 0 }}>{apt.time_slot?.split(' ')[0]}</p>
+                        <p style={{ fontSize: '10px', color: '#9CA3AF', margin: 0 }}>{apt.time_slot?.split(' ')[1]}</p>
+                      </div>
+
+                      {/* Info */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: '14px', fontWeight: 600, color: '#111827', margin: '0 0 3px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {apt.patients?.name}
+                        </p>
+                        <p style={{ fontSize: '12px', color: '#6B7280', margin: 0 }}>
+                          📞 {apt.patients?.phone}
+                          {apt.doctors?.name && ` · 👨‍⚕️ ${apt.doctors.name}`}
+                        </p>
+                      </div>
+
+                      {/* Status + Actions */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end', flexShrink: 0 }}>
+                        <span style={{
+                          padding: '3px 10px', borderRadius: '100px',
+                          background: statusColors[apt.status]?.bg,
+                          color: statusColors[apt.status]?.color,
+                          fontSize: '11px', fontWeight: 600
+                        }}>
+                          {apt.status}
+                        </span>
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                          {['pending', 'confirmed', 'completed', 'cancelled'].map(s => (
+                            <button
+                              key={s}
+                              onClick={() => updateStatus(apt.id, s)}
+                              style={{
+                                padding: '3px 7px',
+                                borderRadius: '6px',
+                                border: `1.5px solid ${apt.status === s ? statusColors[s].color : '#E5E7EB'}`,
+                                background: apt.status === s ? statusColors[s].bg : 'white',
+                                color: apt.status === s ? statusColors[s].color : '#9CA3AF',
+                                fontSize: '10px', fontWeight: 600,
+                                cursor: 'pointer', fontFamily: 'inherit',
+                                transition: 'all 0.15s'
+                              }}
+                            >
+                              {s.charAt(0).toUpperCase() + s.slice(1)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
