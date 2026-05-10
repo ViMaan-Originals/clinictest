@@ -287,7 +287,7 @@ async function bulkUpdateDate(date, action) {
                       </div>
 
                       {/* Info */}
-                      <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ flex: 1, }}>
                         <p style={{ fontSize: '14px', fontWeight: 600, color: '#111827', margin: '0 0 3px',textTransform:'capitalize', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {apt.patients?.name}
                         </p>
@@ -301,7 +301,7 @@ async function bulkUpdateDate(date, action) {
                       </div>
 
                       {/* Status + Actions */}
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end', flexShrink: 0 }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: window.innerWidth <= 768 ? 'flex-start' : 'flex-end', flexShrink: 0 }}>
                    <div>   <span style={{
                     padding: '3px 10px', borderRadius: '100px',
                   color: '#000',
@@ -317,7 +317,7 @@ async function bulkUpdateDate(date, action) {
                         }}>
                          {apt.status}
                         </span></div>
-                        <div style={{ display: 'flex', gap: '4px' }}>
+                        <div style={{ display: window.innerWidth <= 768 ? 'grid' : 'flex',gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
                           {['pending', 'confirmed', 'completed', 'cancelled'].map(s => (
                             <button key={s} onClick={() => updateStatus(apt.id, s)} style={{
                               padding: '3px 7px', borderRadius: '6px', border: '1.5px solid',

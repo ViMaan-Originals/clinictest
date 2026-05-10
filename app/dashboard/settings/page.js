@@ -157,7 +157,7 @@ const [doctorBio, setDoctorBio] = useState('')
 
       
           <div style={{ padding: '20px', background:'#fff' ,border: '1px solid #eee', borderRadius: '10px', marginBottom: '30px' , display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
-  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '10px' }}>
     <input
       placeholder="Doctor Name *"
       value={doctorName}

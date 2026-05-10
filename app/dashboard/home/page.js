@@ -132,7 +132,7 @@ export default function HomePage() {
 
                 {/* Status */}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: window.innerWidth <= 768 ? 'flex-start' : 'flex-end',}}>
  <div> <span style={{
     padding: '3px 10px', borderRadius: '100px',
     color: '#000',
@@ -151,7 +151,7 @@ export default function HomePage() {
     {apt.status}
   </span></div>
 
-  <div style={{ display: 'flex', gap: '4px' }}>
+  <div style={{ display: window.innerWidth <= 768 ? 'grid' : 'flex', gap: '4px',gridTemplateColumns: '1fr 1fr'}}>
     {['pending', 'confirmed', 'completed', 'cancelled'].map(s => (
       <button
         key={s}
