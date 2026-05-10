@@ -278,7 +278,7 @@ async function bulkUpdateDate(date, action) {
                     <div key={apt.id} style={{
                       padding: '14px 18px',
                       borderBottom: i < visibleApts.length - 1 ? '1px solid #F9FAFB' : 'none',
-                      display: 'flex', alignItems: 'center', gap: '14px'
+                      display: 'flex', alignItems: 'center', gap: '14px', overflowX:'auto',scrollbarWidth:'none'
                     }}>
                       {/* Time */}
                       <div style={{ width: '64px', flexShrink: 0, textAlign: 'center', background: '#F7F9F8', borderRadius: '10px', padding: '8px 4px' }}>

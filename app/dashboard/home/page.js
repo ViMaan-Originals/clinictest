@@ -112,10 +112,11 @@ export default function HomePage() {
               <div key={apt.id} style={{
                 padding: '16px 20px',
                 borderBottom: i < todayApts.length - 1 ? '1px solid #F9FAFB' : 'none',
-                display: 'flex', alignItems: 'center', gap: '16px'
+                display: 'flex', alignItems: 'center', gap: '16px', overflowX:'auto',scrollbarWidth:'none'
+          
               }}>
                 {/* Time */}
-                <div style={{ width: '72px', flexShrink: 0, textAlign: 'center', background: '#F7F9F8', borderRadius: '10px', padding: '8px 4px' }}>
+                <div style={{ width: window.innerWidth <= 768 ? '15vw':'5vw', flexShrink: 0, textAlign: 'center', background: '#F7F9F8', borderRadius: '10px', padding: '8px 4px' }}>
                   <p style={{ fontSize: '13px', fontWeight: 700, color: '#0D9488', margin: 0 }}>{apt.time_slot?.split(' ')[0]}</p>
                   <p style={{ fontSize: '10px', color: '#9CA3AF', margin: 0 }}>{apt.time_slot?.split(' ')[1]}</p>
                 </div>
