@@ -1,5 +1,6 @@
 import { supabase } from '../../lib/supabase'
 import { notFound } from 'next/navigation'
+import { CalendarRange, ClipboardClock, Clock, FileUser, Hospital, MapPin, PhoneIcon, Smile, TableOfContents } from 'lucide-react'
 
 
 export const dynamic = 'force-dynamic'
@@ -223,24 +224,24 @@ export default async function DoctorsPage({ params }) {
 
       <div className="page">
         <div className="hero">
-          <div className="hero-badge">🏥 Healthcare</div>
+          <div className="hero-badge"><Hospital/> Healthcare</div>
           <h1 className="hero-name">{clinic.name}</h1>
           <div className="hero-info">
             {clinic.address && (
               <div className="hero-info-item">
-                <div className="hero-info-icon">📍</div>
+                <div className="hero-info-icon"><MapPin size={'20px'} /></div>
                 <span>{clinic.address}</span>
               </div>
             )}
             {clinic.phone && (
               <div className="hero-info-item">
-                <div className="hero-info-icon">📞</div>
+                <div className="hero-info-icon"><PhoneIcon size={'20px'} /></div>
                 <span>{clinic.phone}</span>
               </div>
             )}
             {clinic.timings && (
               <div className="hero-info-item">
-                <div className="hero-info-icon">🕐</div>
+                <div className="hero-info-icon"><Clock size={'20px'} /></div>
                 <span>{clinic.timings}</span>
               </div>
             )}
@@ -250,7 +251,7 @@ export default async function DoctorsPage({ params }) {
         <div className="content">
           <div className="actions-card">
             <a href={`/clinic/${slug}/book`} className="action-btn">
-              <div className="action-icon teal">📅</div>
+              <div className="action-icon teal"><CalendarRange size={'20px'} color='#4c4c4c'/></div>
               <div className="action-label">
                 <strong>Book Appointment</strong>
                 <span>Schedule a visit with our doctors</span>
@@ -258,7 +259,7 @@ export default async function DoctorsPage({ params }) {
               <span className="action-arrow">›</span>
             </a>
             <a href={`/clinic/${slug}/checkstatus`} className="action-btn">
-              <div className="action-icon amber">🥼</div>
+              <div className="action-icon amber"><ClipboardClock size={'20px'} color='#4c4c4c' /></div>
               <div className="action-label">
                 <strong>Check Appointment Status</strong>
                 <span></span>
@@ -266,7 +267,7 @@ export default async function DoctorsPage({ params }) {
               <span className="action-arrow">›</span>
             </a>
             <a href={`/clinic/${slug}/doctors`} className="action-btn">
-              <div className="action-icon amber">🥼</div>
+              <div className="action-icon amber"><Smile size={'20px'} color='#4c4c4c'/></div>
               <div className="action-label">
                 <strong>Our Doctors</strong>
                 <span>Know more about us</span>
@@ -274,7 +275,7 @@ export default async function DoctorsPage({ params }) {
               <span className="action-arrow">›</span>
             </a>
             <a href={`/clinic/${slug}/faqs`} className="action-btn">
-              <div className="action-icon amber">❓</div>
+              <div className="action-icon amber"><TableOfContents size={'20px'} color='#4c4c4c'/></div>
               <div className="action-label">
                 <strong>FAQs</strong>
                 <span>Common questions answered</span>

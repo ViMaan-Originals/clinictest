@@ -2,18 +2,26 @@
 
 import { usePathname, useRouter } from 'next/navigation'
 import { supabase } from '../lib/supabase'
+import {
+  Home,
+  Calendar,
+  Users,
+  FlaskConical,
+  CircleHelp,
+  Settings,
+} from 'lucide-react'
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname()
   const router = useRouter()
 
 const navItems = [
-  { label: 'Home', href: '/dashboard/home', icon: '🏠' },
-  { label: 'Appointments', href: '/dashboard/appointments', icon: '📅' },
-  { label: 'Patients', href: '/dashboard/patients', icon: '👥' },
-  { label: 'Results', href: '/dashboard/results', icon: '🧪' },
-  { label: 'FAQs', href: '/dashboard/faqs', icon: '❓' },
-  { label: 'Settings', href: '/dashboard/settings', icon: '⚙️' },
+  { label: 'Home', href: '/dashboard/home', icon: Home },
+  { label: 'Appointments', href: '/dashboard/appointments', icon: Calendar },
+  { label: 'Patients', href: '/dashboard/patients', icon: Users },
+  { label: 'Results', href: '/dashboard/results', icon: FlaskConical },
+  { label: 'FAQs', href: '/dashboard/faqs', icon: CircleHelp },
+  { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
 
   if (pathname === '/dashboard') return children
@@ -22,6 +30,7 @@ const navItems = [
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap');
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=home_app_logo" />
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', sans-serif; background: #F7F9F8; }
 
@@ -107,7 +116,7 @@ const navItems = [
 
       <div className="layout">
         <div className="topbar">
-          <span className="topbar-logo">ClinicApp</span>
+          <span className="topbar-logo">Sevaiq</span>
           <button
             className="logout-btn"
             onClick={async () => { await supabase.auth.signOut(); router.push('/dashboard') }}
@@ -117,15 +126,18 @@ const navItems = [
         </div>
 
         <nav className="nav">
-          {navItems.map(item => (
-            <button
-              key={item.href}
-              className={`nav-item ${pathname === item.href ? 'active' : ''}`}
-              onClick={() => router.push(item.href)}
-            >
-              {item.icon} {item.label}
-            </button>
-          ))}
+          {navItems.map(item => {
+  const Icon = item.icon
+  return (
+    <button
+      key={item.href}
+      className={`nav-item ${pathname === item.href ? 'active' : ''}`}
+      onClick={() => router.push(item.href)}
+    >
+      <Icon size={15} /> {item.label}
+    </button>
+  )
+})}
         </nav>
 
         <main className="main">

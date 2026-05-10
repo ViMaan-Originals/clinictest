@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useRouter } from 'next/navigation'
+import { PhoneIcon } from 'lucide-react'
 
 export default function ResultsPage() {
   const [patients, setPatients] = useState([])
@@ -146,9 +147,9 @@ export default function ResultsPage() {
           {results.map(r => (
             <div key={r.id} style={{ background:'#fff',padding: '16px', border: '1px solid #eee', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <h3 style={{ margin: '0 0 4px' ,color:'#737373'}}>{r.patients?.name}</h3>
-                <p style={{ margin: '0 0 4px', color: '#666', fontSize: '14px' }}>📞 {r.patients?.phone}</p>
-                {r.description && <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{r.description}</p>}
+                <h3 style={{ margin: '0 0 4px' ,color:'#737373', textTransform:"capitalize"}}>{r.patients?.name}</h3>
+                <p style={{ margin: '0 0 4px', color: '#666', fontSize: '14px'}}>Phone: {r.patients?.phone}</p>
+                {r.description && <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>Reason of Visit: {r.description}</p>}
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <a

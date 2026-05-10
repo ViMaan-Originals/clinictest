@@ -12,6 +12,7 @@ export default function BookPage() {
   const [form, setForm] = useState({
     name: '', phone: '', age: '', gender: '',
     doctor_id: '', date: '', time_slot: '',
+  reason_for_visit: ''
   })
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -164,6 +165,7 @@ if (weeklyOff) {
       clinic_id: clinic.id, patient_id: patient.id,
       doctor_id: form.doctor_id,
       date: form.date, time_slot: form.time_slot, status: 'pending',
+      reason_for_visit: form.reason_for_visit || null,
     })
 
     setLoading(false)
@@ -285,6 +287,15 @@ if (weeklyOff) {
           </div>
         </div>
 
+        <div className="field">
+  <label>Reason for Visit (optional)</label>
+  <input
+    placeholder="e.g. Fever, checkup, follow-up..."
+    value={form.reason_for_visit}
+    onChange={e => setForm({ ...form, reason_for_visit: e.target.value })}
+  />
+</div>
+
         <p className="section-label">Choose Doctor & Schedule</p>
 
         <div className="field">
@@ -308,6 +319,8 @@ if (weeklyOff) {
             />
           </div>
         )}
+
+        
 
         {form.doctor_id && form.date && (
           <div className="field">
@@ -343,7 +356,7 @@ if (weeklyOff) {
         )}
 
         {!form.doctor_id && (
-          <div className="hint-msg">👆 Select a doctor to see available slots</div>
+          <div className="hint-msg"> Select a doctor to see available slots</div>
         )}
 
         {bookingError && (

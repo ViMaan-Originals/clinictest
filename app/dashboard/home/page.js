@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useRouter } from 'next/navigation'
+import { Users, CalendarRange, PhoneIcon, UserPen} from 'lucide-react'
 
 export default function HomePage() {
   const [clinic, setClinic] = useState(null)
@@ -67,7 +68,7 @@ export default function HomePage() {
 
       {/* Header */}
       <div style={{ marginBottom: '28px' }}>
-        <p style={{ fontSize: '13px', color: '#9CA3AF', marginBottom: '4px' }}>{greeting} 👋</p>
+        <p style={{ fontSize: '13px', color: '#9CA3AF', marginBottom: '4px' }}>{greeting}</p>
         <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: '28px', color: '#111827', margin: '0 0 4px' }}>{clinic?.name}</h1>
         <p style={{ fontSize: '13px', color: '#6B7280', margin: 0 }}>
           {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
@@ -75,14 +76,14 @@ export default function HomePage() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '28px' }}>
+      <div style={{ display: 'flex',justifyContent:'center', gap: '12px', marginBottom: '28px' }}>
         {[
           { label: "Today's Total", value: stats.total, bg: '#F0FDFA', color: '#0D9488' },
           { label: 'Pending', value: stats.pending, bg: '#FFFBEB', color: '#D97706' },
           { label: 'Confirmed', value: stats.confirmed, bg: '#ECFDF5', color: '#059669' },
           { label: 'Completed', value: stats.completed, bg: '#F9FAFB', color: '#6B7280' },
         ].map(stat => (
-          <div key={stat.label} style={{ background: stat.bg, borderRadius: '14px', padding: '16px', textAlign: 'center' }}>
+          <div key={stat.label} style={{ background: stat.bg,width:'25%', borderRadius: '14px', padding: '16px', textAlign: 'center' }}>
             <p style={{ fontSize: '28px', fontWeight: 700, color: stat.color, margin: '0 0 4px', fontFamily: "'DM Serif Display', serif" }}>{stat.value}</p>
             <p style={{ fontSize: '11px', color: stat.color, margin: 0, fontWeight: 600, opacity: 0.8 }}>{stat.label}</p>
           </div>
@@ -103,7 +104,6 @@ export default function HomePage() {
 
         {todayApts.length === 0 ? (
           <div style={{ padding: '48px 20px', textAlign: 'center', color: '#9CA3AF' }}>
-            <p style={{ fontSize: '32px', marginBottom: '8px' }}>🎉</p>
             <p style={{ fontSize: '14px' }}>No appointments today!</p>
           </div>
         ) : (
@@ -122,11 +122,12 @@ export default function HomePage() {
 
                 {/* Info */}
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: '15px', fontWeight: 600, color: '#111827', margin: '0 0 3px' }}>{apt.patients?.name}</p>
-                  <p style={{ fontSize: '12px', color: '#6B7280', margin: 0 }}>
-                    📞 {apt.patients?.phone}
-                    {apt.doctors?.name && ` · 👨‍⚕️ ${apt.doctors.name}`}
-                  </p>
+                  <p style={{ fontSize: '15px', fontWeight: 600, color: '#111827', margin: '0 0 3px', textTransform:'capitalize'}}>{apt.patients?.name}</p>
+                  
+                     <p style={{ fontSize:'12px',display:'flex', alignItems:'center', gap:'5px',color: '#6B7280', margin: 0}}><PhoneIcon size='12px'/>{apt.patients?.phone}</p>
+                     <p style={{ fontSize:'12px',display:'flex', alignItems:'center', gap:'5px',color: '#6B7280', margin: 0}}><UserPen size='12px'/>{apt.doctors?.name}</p>
+                    
+                  
                 </div>
 
                 {/* Status */}
@@ -184,7 +185,7 @@ export default function HomePage() {
           onClick={() => router.push('/dashboard/appointments')}
           style={{ padding: '16px', background: 'white', border: '1.5px solid #E5E7EB', borderRadius: '14px', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
         >
-          <p style={{ fontSize: '20px', margin: '0 0 6px' }}>📅</p>
+          <p style={{ fontSize: '20px', margin: '0 0 6px' }}><CalendarRange size={20} color='#404145'/></p>
           <p style={{ fontSize: '14px', fontWeight: 600, color: '#111827', margin: '0 0 2px' }}>All Appointments</p>
           <p style={{ fontSize: '12px', color: '#9CA3AF', margin: 0 }}>View & manage all</p>
         </button>
@@ -192,7 +193,7 @@ export default function HomePage() {
           onClick={() => router.push('/dashboard/patients')}
           style={{ padding: '16px', background: 'white', border: '1.5px solid #E5E7EB', borderRadius: '14px', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
         >
-          <p style={{ fontSize: '20px', margin: '0 0 6px' }}>👥</p>
+          <p style={{ fontSize: '20px', margin: '0 0 6px' }}><Users size={20} color="#404145" /></p>
           <p style={{ fontSize: '14px', fontWeight: 600, color: '#111827', margin: '0 0 2px' }}>Patients</p>
           <p style={{ fontSize: '12px', color: '#9CA3AF', margin: 0 }}>View patient records</p>
         </button>

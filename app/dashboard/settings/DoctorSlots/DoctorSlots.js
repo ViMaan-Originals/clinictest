@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '../../../lib/supabase'
+import { User } from 'lucide-react'
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
@@ -189,9 +190,11 @@ export default function DoctorSlots({ clinicId, doctors }) {
             borderColor: selectedDoctor?.id === d.id ? '#0D9488' : '#E5E7EB',
             background: selectedDoctor?.id === d.id ? '#0D9488' : 'white',
             color: selectedDoctor?.id === d.id ? 'white' : '#374151',
-            fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit'
+            fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',display:'flex',
+            alignItems:'center',textTransform:'capitalize',gap:'3px'
+    
           }}>
-            👨‍⚕️ {d.name}
+            <User size={'13px'}/>{d.name}
           </button>
         ))}
       </div>
@@ -253,7 +256,7 @@ export default function DoctorSlots({ clinicId, doctors }) {
                       placeholder="e.g. 10:00 AM or 10-11 AM"
                       value={slotTime}
                       onChange={e => setSlotTime(e.target.value)}
-                      style={{ padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit', width: '200px' }}
+                      style={{ color:'#4a4949',padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit', width: '200px' }}
                     />
                   </div>
                   <div>
@@ -262,7 +265,7 @@ export default function DoctorSlots({ clinicId, doctors }) {
                       type="number" min="1" max="50"
                       value={slotCapacity}
                       onChange={e => setSlotCapacity(e.target.value)}
-                      style={{ width: '70px', padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit' }}
+                      style={{ width: '70px', color:'#4a4949',padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit' }}
                     />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -288,7 +291,7 @@ export default function DoctorSlots({ clinicId, doctors }) {
                       <select
                         value={slotDay}
                         onChange={e => setSlotDay(e.target.value)}
-                        style={{ padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit' }}
+                        style={{ padding: '10px 12px', borderRadius: '8px', color:'#4a4949',border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit' }}
                       >
                         {DAYS.filter(d => !isDayOff(d)).map(d => <option key={d} value={d}>{d}</option>)}
                       </select>
@@ -336,7 +339,7 @@ export default function DoctorSlots({ clinicId, doctors }) {
                                 type="number" min="1" max="50"
                                 value={slot.max_capacity}
                                 onChange={e => updateSlotCapacity(slot.id, e.target.value)}
-                                style={{ width: '52px', padding: '4px 8px', borderRadius: '6px', border: '1px solid #E5E7EB', fontSize: '13px', fontFamily: 'inherit' }}
+                                style={{ color:'#4f4f4f', width: '52px',padding: '4px 8px', borderRadius: '6px', border: '1px solid #E5E7EB', fontSize: '13px', fontFamily: 'inherit' }}
                               />
                             </div>
                             <button onClick={() => toggleSlotActive(slot)} style={{
@@ -378,12 +381,12 @@ export default function DoctorSlots({ clinicId, doctors }) {
                   <div>
                     <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '5px' }}>Date</p>
                     <input type="date" value={limitDate} min={today} onChange={e => setLimitDate(e.target.value)}
-                      style={{ padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit' }} />
+                      style={{ padding: '10px 12px',color:'#4c4b4b', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit' }} />
                   </div>
                   <div>
                     <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '5px' }}>Max Patients</p>
                     <input type="number" min="1" max="200" value={limitMax} onChange={e => setLimitMax(parseInt(e.target.value))}
-                      style={{ width: '80px', padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit' }} />
+                      style={{ width: '80px',color:'#4c4b4b', padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit' }} />
                   </div>
                   <button onClick={addDailyLimit} disabled={saving} style={{ padding: '10px 20px', background: '#0D9488', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
                     {saving ? 'Saving...' : 'Set Override'}
@@ -411,7 +414,7 @@ export default function DoctorSlots({ clinicId, doctors }) {
                           color: limit.is_accepting ? '#059669' : '#DC2626',
                           fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit'
                         }}>
-                          {limit.is_accepting ? '✅ Accepting' : '🔴 Paused'}
+                          {limit.is_accepting ? ' Accepting' : ' Paused'}
                         </button>
                         <button onClick={() => deleteDailyLimit(limit.id)} style={{ padding: '6px 10px', borderRadius: '8px', background: '#FEF2F2', border: 'none', color: '#EF4444', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}>
                           Delete
@@ -435,12 +438,12 @@ export default function DoctorSlots({ clinicId, doctors }) {
                   <div>
                     <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '5px' }}>Date</p>
                     <input type="date" value={holidayDate} min={today} onChange={e => setHolidayDate(e.target.value)}
-                      style={{ padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit' }} />
+                      style={{ padding: '10px 12px',color:'#4c4b4b', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit' }} />
                   </div>
                   <div>
                     <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '5px' }}>Reason (optional)</p>
                     <input placeholder="e.g. Diwali" value={holidayReason} onChange={e => setHolidayReason(e.target.value)}
-                      style={{ padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit', width: '180px' }} />
+                      style={{ padding: '10px 12px', color:'#4c4b4b',borderRadius: '8px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontFamily: 'inherit', width: '180px' }} />
                   </div>
                   <button onClick={addHoliday} disabled={saving} style={{ padding: '10px 20px', background: '#0D9488', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
                     {saving ? 'Saving...' : 'Mark Holiday'}
